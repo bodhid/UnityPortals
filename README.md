@@ -7,7 +7,7 @@ This amount can be anything from 1 to 16, or if you feel like destroying your me
 It is also not limited to only 2 portals. You can create as many pairs as you want, just link them together in their inspectors.
 However they seem to sneakily steal each other's temporary buffers when having more than 2 pairs.
 
-You can throw any rigidbody through the portals, in the example scene is a ball you can roll through it. Only it slowly becomes an egg after a few times, weirdest glitch ever.
+You can throw any rigidbody through the portals, in the example scene is a ball you can roll through it. Only it slowly becomes an egg after a few times, weirdest glitch ever. If you make Portal a rigidbody and throw it through it's connecting portal, your PC might explode.
 
 Can be a bit glitchy when using certain rotations, still working on that
 ![alt text](https://i.postimg.cc/VLRw6MbZ/portal1.jpg)
