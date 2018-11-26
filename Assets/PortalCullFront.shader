@@ -1,4 +1,4 @@
-﻿Shader "Unlit/Portal"
+﻿Shader "Unlit/PortalCullFront"
 {
 	Properties
 	{
@@ -9,6 +9,7 @@
 		Tags { "RenderType"="Opaque" "Queue"="Geometry+1" }
 		LOD 100
 		ztest Less
+		cull front
 		Offset -1, -1
 		Pass
 		{
