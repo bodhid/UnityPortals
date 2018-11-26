@@ -68,22 +68,34 @@ public class Portal : MonoBehaviour
 	private void SetPortalBuffer(int portalDepth)
 	{
 		RenderTexture.ReleaseTemporary(buffer[portalDepth]);
-		buffer[portalDepth] = RenderTexture.GetTemporary(Screen.width, Screen.height, 32, RenderTextureFormat.ARGB32);
+		float resolution = 1;
+		for (int i = 0; i < portalDepth; ++i) resolution *= downscaleFactor;
+		buffer[portalDepth] = RenderTexture.GetTemporary((int)( Screen.width* resolution), (int)(Screen.height* resolution), 32, RenderTextureFormat.ARGB32);
 	}
 
 	private void SetPortalCameraSettings(int portalDepth)
 	{
 		cam[portalDepth].CopyFrom(Camera.current);
+
+		//Never render the other portal, this creates a messy loop
 		int excludeLayer = (gameObject.layer == 11) ? 12 : 11;
 		cam[portalDepth].cullingMask = ~(1 << excludeLayer);
+
+		//Set znear for portalCamera
+
+		Transform currentCameraTransform = Camera.current.transform;
+		Vector3 closestPoint =  myCollider.bounds.ClosestPoint(Camera.current.transform.position);
+		Vector3 closestPointOnDepthBuffer = Vector3.Project(closestPoint - currentCameraTransform.position, currentCameraTransform.forward);
+		cam[portalDepth].nearClipPlane = closestPointOnDepthBuffer.magnitude;
 	}
 
 	private void SetPortalCameraTransform(int portalDepth)
 	{
+		Transform currentCameraTransform = Camera.current.transform;
 		camParent[portalDepth].position = transform.position;
 		camParent[portalDepth].rotation = transform.rotation;
-		cam[portalDepth].transform.position = Camera.current.transform.position;
-		cam[portalDepth].transform.rotation = Camera.current.transform.rotation;
+		cam[portalDepth].transform.position = currentCameraTransform.position;
+		cam[portalDepth].transform.rotation = currentCameraTransform.rotation;
 		camParent[portalDepth].position = connection.transform.position;
 		camParent[portalDepth].eulerAngles = connection.transform.eulerAngles + new Vector3(0, 180, 0);
 	}
@@ -102,15 +114,19 @@ public class Portal : MonoBehaviour
 		//Teleport object that enters
 		if (myCollider.bounds.Contains(other.transform.position))
 		{
-			Transform t = other.transform;
-			Transform parent = other.transform.parent;
-			t.SetParent(transform);
-			Vector3 localPosition = t.localPosition;
-			Quaternion localRotation = t.localRotation;
-			t.SetParent(connection.transform);
-			t.localPosition = localPosition;
-			t.localRotation = localRotation;
-			t.SetParent(parent);
+			Transform otherTransform = other.transform;
+			Transform otherParent = other.transform.parent;
+			Transform myParent = transform.parent;
+			Vector3 myPosition = transform.localPosition;
+			Quaternion myRotation = transform.localRotation;
+			otherTransform.SetParent(transform);
+			transform.SetParent(connection.transform);
+			transform.localEulerAngles = new Vector3(0, 180, 0);
+			transform.localPosition = Vector3.zero;
+			otherTransform.SetParent(otherParent);
+			transform.SetParent(myParent);
+			transform.localPosition = myPosition;
+			transform.localRotation = myRotation;
 		}
 	}
 }
