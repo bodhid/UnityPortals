@@ -5,6 +5,7 @@ The portal object has a MonoBehaviour that renders a cached camera before render
 This amount can be anything from 1 to 16, or if you feel like destroying your memory you could ofcourse set it higher than that.
 
 It is also not limited to only 2 portals. You can create as many pairs as you want, just link them together in their inspectors.
+However they seem to sneakily steal each other's temporary buffers. 
 
 Can be a bit glitchy when using certain rotations, still working on that
 ![alt text](https://i.postimg.cc/VLRw6MbZ/portal1.jpg)
