@@ -84,7 +84,7 @@ public class Portal : MonoBehaviour
 		//Set znear for portalCamera
 
 		Transform currentCameraTransform = Camera.current.transform;
-		Vector3 closestPoint =  myCollider.bounds.ClosestPoint(Camera.current.transform.position);
+		Vector3 closestPoint =  myCollider.bounds.ClosestPoint(currentCameraTransform.position);
 		Vector3 closestPointOnDepthBuffer = Vector3.Project(closestPoint - currentCameraTransform.position, currentCameraTransform.forward);
 		cam[portalDepth].nearClipPlane = closestPointOnDepthBuffer.magnitude;
 	}
